@@ -9,38 +9,40 @@
         @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100;400;700&display=swap');
         body {
             font-family: 'Vazirmatn', sans-serif;
-            background-color: #f0f4f8;
+            background-color: #0f172a; /* برگرفته از کد دوم */
+            color: #f1f5f9; /* برگرفته از کد دوم */
             overflow: hidden;
         }
         canvas {
-            background-color: #ffffff;
+            background-color: #1e293b; /* رنگ اسلیت تیره متناسب با تم دوم */
             border-bottom: 3px solid #334155;
             cursor: crosshair;
             touch-action: none;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
         }
         .control-panel {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(30, 41, 59, 0.8); /* برگرفته از کد دوم */
             backdrop-filter: blur(10px);
         }
         #tooltip {
             position: absolute;
             pointer-events: none;
             background: rgba(15, 23, 42, 0.95);
-            color: white;
+            color: #f1f5f9;
             padding: 10px 14px;
             border-radius: 10px;
             font-size: 12px;
             display: none;
             z-index: 100;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(59, 130, 246, 0.3);
             line-height: 1.6;
         }
         .stat-highlight {
             transition: all 0.2s ease;
         }
         .stat-hovered {
-            color: #fbbf24 !important; /* Yellow-400 */
+            color: #60a5fa !important; /* Blue-400 مطابق کد دوم */
             transform: scale(1.05);
         }
     </style>
@@ -49,51 +51,46 @@
 
     <div id="tooltip"></div>
 
-    <!-- Header -->
-    <header class="bg-slate-800 text-white p-4 shadow-lg">
-        <h1 class="text-2xl font-bold text-center">شبیه‌ساز هوشمند حرکت پرتابی</h1>
-        <p class="text-sm text-center text-slate-300 mt-1">کنترل مقیاس به صورت هندسی برای دقت بیشتر</p>
+    <header class="bg-slate-900 text-white p-4 shadow-lg border-b border-slate-800">
+        <h1 class="text-2xl font-bold text-center text-blue-400">شبیه‌ساز هوشمند حرکت پرتابی</h1>
+        <p class="text-sm text-center text-slate-400 mt-1">کنترل مقیاس به صورت هندسی برای دقت بیشتر</p>
     </header>
 
     <main class="flex-1 flex flex-col md:flex-row p-4 gap-4 overflow-hidden">
         
-        <!-- Simulation Area -->
-        <div class="flex-1 bg-white rounded-xl shadow-inner overflow-hidden flex flex-col relative" id="canvas-wrapper">
+        <div class="flex-1 bg-slate-800 rounded-xl shadow-inner overflow-hidden flex flex-col relative" id="canvas-wrapper">
             <canvas id="simCanvas" class="w-full h-full"></canvas>
             
-            <!-- Real-time Stats Overlay -->
-            <div id="statsBox" class="absolute top-4 left-4 bg-slate-800/80 text-white p-3 rounded-lg text-sm border border-slate-600 space-y-1 transition-all">
-                <div class="stat-highlight">برد افقی: <span id="statRange" class="font-mono text-cyan-400">0</span> متر</div>
-                <div class="stat-highlight">اوج ارتفاع: <span id="statMaxHeight" class="font-mono text-yellow-400">0</span> متر</div>
-                <div class="stat-highlight">زمان پرواز: <span id="statTime" class="font-mono text-green-400">0</span> ثانیه</div>
+            <div id="statsBox" class="absolute top-4 left-4 bg-black/40 text-white p-3 rounded-lg text-sm border border-slate-700 backdrop-blur-sm space-y-1 transition-all">
+                <div class="stat-highlight text-slate-300">برد افقی: <span id="statRange" class="font-mono text-green-400">0</span> متر</div>
+                <div class="stat-highlight text-slate-300">اوج ارتفاع: <span id="statMaxHeight" class="font-mono text-yellow-400">0</span> متر</div>
+                <div class="stat-highlight text-slate-300">زمان پرواز: <span id="statTime" class="font-mono text-blue-400">0</span> ثانیه</div>
             </div>
         </div>
 
-        <!-- Controls Area -->
         <aside class="w-full md:w-80 space-y-4 overflow-y-auto pr-1">
-            <div class="control-panel p-6 rounded-xl shadow-md border border-slate-200">
-                <h2 class="text-lg font-bold mb-4 border-b pb-2 text-slate-700">تنظیمات پرتاب</h2>
+            <div class="control-panel p-6 rounded-xl shadow-md border border-slate-700">
+                <h2 class="text-lg font-bold mb-4 border-b border-slate-700 pb-2 text-blue-300">تنظیمات پرتاب</h2>
                 
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-slate-600 mb-1">زاویه پرتاب (درجه): <span id="valAngle" class="text-blue-600">45</span></label>
-                    <input type="range" id="inputAngle" min="0" max="90" value="45" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
+                    <label class="block text-sm font-medium text-slate-300 mb-1">زاویه پرتاب (درجه): <span id="valAngle" class="text-blue-400">45</span></label>
+                    <input type="range" id="inputAngle" min="0" max="90" value="45" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500">
                 </div>
 
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-slate-600 mb-1">سرعت اولیه (m/s): <span id="valVelocity" class="text-blue-600">50</span></label>
-                    <input type="range" id="inputVelocity" min="10" max="150" value="50" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
+                    <label class="block text-sm font-medium text-slate-300 mb-1">سرعت اولیه (m/s): <span id="valVelocity" class="text-blue-400">50</span></label>
+                    <input type="range" id="inputVelocity" min="10" max="150" value="50" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500">
                 </div>
 
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-slate-600 mb-1">شتاب گرانش (m/s²): <span id="valGravity" class="text-blue-600">9.8</span></label>
-                    <input type="range" id="inputGravity" min="1" max="30" step="0.1" value="9.8" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
+                    <label class="block text-sm font-medium text-slate-300 mb-1">شتاب گرانش (m/s²): <span id="valGravity" class="text-blue-400">9.8</span></label>
+                    <input type="range" id="inputGravity" min="1" max="30" step="0.1" value="9.8" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500">
                 </div>
 
-                <!-- Geometric/Logarithmic Scale Control -->
-                <div class="mb-6 p-4 bg-indigo-50 rounded-xl border border-indigo-100">
-                    <label class="block text-sm font-bold text-indigo-700 mb-1 italic">🔍 مقیاس هندسی (Zoom): <span id="valScale" class="text-indigo-900 font-mono">5.00</span></label>
-                    <input type="range" id="inputScale" min="-2" max="2" step="0.01" value="0.699" class="w-full h-2 bg-indigo-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
-                    <div class="flex justify-between text-[9px] text-indigo-400 mt-1">
+                <div class="mb-6 p-4 bg-slate-900/50 rounded-xl border border-slate-700">
+                    <label class="block text-sm font-bold text-blue-300 mb-1 italic">🔍 مقیاس هندسی (Zoom): <span id="valScale" class="text-blue-400 font-mono">5.00</span></label>
+                    <input type="range" id="inputScale" min="-2" max="2" step="0.01" value="0.699" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500">
+                    <div class="flex justify-between text-[9px] text-slate-500 mt-1">
                         <span>دور (x0.01)</span>
                         <span>معمولی (x1)</span>
                         <span>نزدیک (x100)</span>
@@ -101,13 +98,13 @@
                 </div>
 
                 <div class="grid grid-cols-2 gap-2">
-                    <button id="btnLaunch" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-all shadow-md active:scale-95">شلیک پرتابه</button>
-                    <button id="btnClear" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-3 rounded-lg transition-all">پاکسازی</button>
+                    <button id="btnLaunch" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition-all shadow-md active:scale-95">شلیک پرتابه</button>
+                    <button id="btnClear" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-lg transition-all">پاکسازی</button>
                 </div>
             </div>
             
-            <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 text-[11px] text-blue-700 leading-relaxed">
-                <b>راهنمای تحلیل:</b> با نگه داشتن موس روی هر مسیر، آمار دقیق آن (در گوشه بالا سمت چپ) نمایش داده می‌شود تا بتوانید پرتاب‌ها را با هم مقایسه کنید.
+            <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-700 text-[11px] text-slate-400 leading-relaxed">
+                <b class="text-blue-400">راهنمای تحلیل:</b> با نگه داشتن موس روی هر مسیر، آمار دقیق آن (در گوشه بالا سمت چپ) نمایش داده می‌شود تا بتوانید پرتاب‌ها را با هم مقایسه کنید.
             </div>
         </aside>
     </main>
@@ -154,9 +151,9 @@
             displays.time.innerText = time.toFixed(2);
             
             if (isHovered) {
-                statsBox.classList.add('ring-2', 'ring-indigo-400');
+                statsBox.classList.add('ring-2', 'ring-blue-500');
             } else {
-                statsBox.classList.remove('ring-2', 'ring-indigo-400');
+                statsBox.classList.remove('ring-2', 'ring-blue-500');
             }
         }
 
@@ -205,16 +202,14 @@
                 tooltip.style.left = (e.clientX + 15) + 'px';
                 tooltip.style.top = (e.clientY + 15) + 'px';
                 tooltip.innerHTML = `
-                    <div style="border-bottom: 1px solid rgba(255,255,255,0.2); margin-bottom: 6px; font-weight: bold; color: #a5b4fc; font-size: 13px;">مشخصات این مسیر</div>
+                    <div style="border-bottom: 1px solid rgba(59,130,246,0.3); margin-bottom: 6px; font-weight: bold; color: #60a5fa; font-size: 13px;">مشخصات این مسیر</div>
                     <div>🚀 سرعت: ${hoveredProjectile.v0} m/s</div>
                     <div>📐 زاویه: ${hoveredProjectile.angleDeg}°</div>
                     <div>🌍 گرانش: ${hoveredProjectile.g} m/s²</div>
                 `;
-                // Update Main Stats Box
                 updateMainStatsUI(hoveredProjectile.theoRange, hoveredProjectile.theoMaxH, hoveredProjectile.theoTime, true);
             } else {
                 tooltip.style.display = 'none';
-                // Revert to latest projectile stats if available
                 if (projectiles.length > 0) {
                     const last = projectiles[projectiles.length - 1];
                     updateMainStatsUI(
@@ -236,7 +231,7 @@
                 this.t_elapsed = 0;
                 this.points = [];
                 this.active = true;
-                this.color = `hsl(${Math.random() * 360}, 75%, 50%)`;
+                this.color = `hsl(${Math.random() * 360}, 80%, 60%)`;
                 this.lastX = 0;
                 
                 this.theoRange = (Math.pow(v0, 2) * Math.sin(2 * this.angle)) / g;
@@ -270,7 +265,6 @@
                 this.lastX = x;
                 this.points.push({ x: x * currentScale, y: canvas.height - groundY - (y * currentScale) });
                 
-                // Only update main UI if not hovering over something else
                 if (!hoveredProjectile) {
                     updateMainStatsUI(x, this.theoMaxH, this.t_elapsed, false);
                 }
@@ -323,9 +317,9 @@
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Ground
+            // Ground Line - Adapted to Dark Theme
             ctx.beginPath();
-            ctx.strokeStyle = "#cbd5e1";
+            ctx.strokeStyle = "#475569";
             ctx.setLineDash([5, 5]);
             ctx.moveTo(0, canvas.height - groundY);
             ctx.lineTo(canvas.width, canvas.height - groundY);
