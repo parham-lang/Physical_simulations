@@ -9,97 +9,99 @@
         @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap');
         body {
             font-family: 'Vazirmatn', sans-serif;
-            background-color: #f0f2f5;
+            background-color: #0f172a; /* برگرفته از کد دوم */
+            color: #f1f5f9; /* برگرفته از کد دوم */
         }
         canvas {
-            background-color: #ffffff;
+            background-color: #1e293b; /* پس‌زمینه تیره برای کانواس */
             border-radius: 8px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
             width: 100%;
             height: auto;
         }
         .control-panel {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(30, 41, 59, 0.8); /* شیشه ای تیره مطابق کد دوم */
             backdrop-filter: blur(10px);
+        }
+        input[type="range"] {
+            accent-color: #3b82f6; /* رنگ تاکید آبی کد دوم */
         }
     </style>
 </head>
 <body class="p-4 md:p-8">
     <div class="max-w-7xl mx-auto">
         <header class="mb-6 text-center">
-            <h1 class="text-3xl font-bold text-blue-800">شبیه‌ساز حرکت بر سطح شیب‌دار</h1>
-            <p class="text-gray-600 mt-2">مبدا مختصات: رأس قائمه | تحلیل مولفه‌های افقی و عمودی</p>
+            <h1 class="text-3xl font-bold text-blue-400">شبیه‌ساز حرکت بر سطح شیب‌دار</h1>
+            <p class="text-slate-400 mt-2">مبدا مختصات: رأس قائمه | تحلیل مولفه‌های افقی و عمودی</p>
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            <!-- Simulation View -->
             <div class="lg:col-span-3 space-y-4">
                 <canvas id="simCanvas" width="900" height="450"></canvas>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="bg-white p-3 rounded-lg shadow border-t-4 border-blue-500">
-                        <h3 class="font-bold text-xs text-gray-500 mb-2">مکان افقی (x) بر حسب متر</h3>
+                    <div class="bg-slate-800 p-3 rounded-lg shadow border-t-4 border-blue-500">
+                        <h3 class="font-bold text-xs text-slate-400 mb-2">مکان افقی (x) بر حسب متر</h3>
                         <canvas id="xGraph" width="300" height="120"></canvas>
                     </div>
-                    <div class="bg-white p-3 rounded-lg shadow border-t-4 border-purple-500">
-                        <h3 class="font-bold text-xs text-gray-500 mb-2">مکان عمودی (y) بر حسب متر</h3>
+                    <div class="bg-slate-800 p-3 rounded-lg shadow border-t-4 border-purple-500">
+                        <h3 class="font-bold text-xs text-slate-400 mb-2">مکان عمودی (y) بر حسب متر</h3>
                         <canvas id="yGraph" width="300" height="120"></canvas>
                     </div>
-                    <div class="bg-white p-3 rounded-lg shadow border-t-4 border-green-500">
-                        <h3 class="font-bold text-xs text-gray-500 mb-2">سرعت لحظه‌ای (v) بر حسب m/s</h3>
+                    <div class="bg-slate-800 p-3 rounded-lg shadow border-t-4 border-green-500">
+                        <h3 class="font-bold text-xs text-slate-400 mb-2">سرعت لحظه‌ای (v) بر حسب m/s</h3>
                         <canvas id="velGraph" width="300" height="120"></canvas>
                     </div>
                 </div>
             </div>
 
-            <!-- Controls -->
-            <div class="lg:col-span-1 control-panel p-5 rounded-xl shadow-lg border border-gray-200 h-fit">
-                <h2 class="text-lg font-bold mb-4 border-b pb-2 text-gray-800">تنظیمات آزمایش</h2>
+            <div class="lg:col-span-1 control-panel p-5 rounded-xl shadow-lg border border-slate-700 h-fit">
+                <h2 class="text-lg font-bold mb-4 border-b border-slate-700 pb-2 text-blue-300">تنظیمات آزمایش</h2>
                 
                 <div class="space-y-5">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">زاویه سطح شیب‌دار: <span id="angleVal" class="font-bold text-blue-600">30</span> درجه</label>
-                        <input type="range" id="angleInput" min="10" max="70" value="30" class="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer">
-                        <p class="text-[10px] text-gray-500 mt-1 leading-tight">نکته: طول مسیر حرکت ثابت است.</p>
+                        <label class="block text-sm font-medium text-slate-300">زاویه سطح شیب‌دار: <span id="angleVal" class="font-bold text-blue-400">30</span> درجه</label>
+                        <input type="range" id="angleInput" min="10" max="70" value="30" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                        <p class="text-[10px] text-slate-500 mt-1 leading-tight">نکته: طول مسیر حرکت ثابت است.</p>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">ضریب اصطکاک (μ): <span id="frictionVal" class="font-bold text-blue-600">0.10</span></label>
-                        <input type="range" id="frictionInput" min="0" max="0.8" step="0.01" value="0.10" class="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer">
+                        <label class="block text-sm font-medium text-slate-300">ضریب اصطکاک (μ): <span id="frictionVal" class="font-bold text-blue-400">0.10</span></label>
+                        <input type="range" id="frictionInput" min="0" max="0.8" step="0.01" value="0.10" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer">
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">جرم جسم (m): <span id="massVal" class="font-bold text-blue-600">5</span> کیلوگرم</label>
-                        <input type="range" id="massInput" min="1" max="20" value="5" class="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer">
-                        <p class="text-[10px] text-gray-500 mt-1 leading-tight">نکته: در غیاب مقاومت هوا، جرم بر شتاب حرکت بی‌تأثیر است.</p>
+                        <label class="block text-sm font-medium text-slate-300">جرم جسم (m): <span id="massVal" class="font-bold text-blue-400">5</span> کیلوگرم</label>
+                        <input type="range" id="massInput" min="1" max="20" value="5" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                        <p class="text-[10px] text-slate-500 mt-1 leading-tight">نکته: در غیاب مقاومت هوا، جرم بر شتاب حرکت بی‌تأثیر است.</p>
                     </div>
 
                     <div class="flex flex-col gap-2 pt-2">
-                        <button id="startBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition shadow-md">شروع / توقف</button>
-                        <button id="resetBtn" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition shadow-md">بازنشانی</button>
+                        <button id="startBtn" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded-lg transition shadow-md">شروع / توقف</button>
+                        <button id="resetBtn" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded-lg transition shadow-md">بازنشانی</button>
                     </div>
 
-                    <div class="mt-4 p-4 bg-gray-50 rounded-lg text-sm space-y-3 border border-gray-200 shadow-inner">
-                        <p class="font-bold border-b pb-1 text-gray-700">وضعیت لحظه‌ای:</p>
+                    <div class="mt-4 p-4 bg-slate-900/50 rounded-lg text-sm space-y-3 border border-slate-700 shadow-inner">
+                        <p class="font-bold border-b border-slate-700 pb-1 text-slate-300">وضعیت لحظه‌ای:</p>
                         <div class="flex justify-between">
                             <span>مکان افقی (x):</span>
-                            <span class="font-mono text-blue-700"><span id="posXText">0.0</span> متر</span>
+                            <span class="font-mono text-blue-400"><span id="posXText">0.0</span> متر</span>
                         </div>
                         <div class="flex justify-between">
                             <span>مکان عمودی (y):</span>
-                            <span class="font-mono text-purple-700"><span id="posYText">0.0</span> متر</span>
+                            <span class="font-mono text-purple-400"><span id="posYText">0.0</span> متر</span>
                         </div>
                         <div class="flex justify-between">
                             <span>سرعت (v):</span>
-                            <span class="font-mono text-green-700"><span id="velText">0.00</span> m/s</span>
+                            <span class="font-mono text-green-400"><span id="velText">0.00</span> m/s</span>
                         </div>
                         <div class="flex justify-between">
                             <span>شتاب (a):</span>
-                            <span class="font-mono text-red-600"><span id="accText">0.00</span> m/s²</span>
+                            <span class="font-mono text-red-400"><span id="accText">0.00</span> m/s²</span>
                         </div>
-                        <div class="flex justify-between border-t pt-1">
+                        <div class="flex justify-between border-t border-slate-700 pt-1">
                             <span>زمان سپری شده (t):</span>
-                            <span class="font-mono text-orange-600 font-bold"><span id="timeText">0.00</span> ثانیه</span>
+                            <span class="font-mono text-orange-400 font-bold"><span id="timeText">0.00</span> ثانیه</span>
                         </div>
                     </div>
                 </div>
@@ -184,21 +186,22 @@
             const startY = groundY - (slopeLength * Math.sin(angle));
             const endX = startX + (slopeLength * Math.cos(angle));
 
+            // رنگ‌بندی ترسیمات داخل کانواس برای هماهنگی با تم تیره
             ctx.setLineDash([5, 5]);
-            ctx.strokeStyle = '#94a3b8';
+            ctx.strokeStyle = '#475569'; // Slate-600
             ctx.beginPath();
             ctx.moveTo(startX, groundY - 100); ctx.lineTo(startX, groundY + 50); 
             ctx.moveTo(startX - 50, groundY); ctx.lineTo(startX + 100, groundY); 
             ctx.stroke();
             ctx.setLineDash([]);
-            ctx.fillStyle = '#64748b';
+            ctx.fillStyle = '#94a3b8'; // Slate-400
             ctx.font = '12px Vazirmatn';
             ctx.fillText("(0,0) مبدا مختصات", startX - 80, groundY + 20);
 
             ctx.beginPath();
             ctx.moveTo(0, groundY);
             ctx.lineTo(canvas.width, groundY);
-            ctx.strokeStyle = '#cbd5e1';
+            ctx.strokeStyle = '#334155'; // Slate-700
             ctx.lineWidth = 2;
             ctx.stroke();
 
@@ -207,9 +210,9 @@
             ctx.lineTo(endX, groundY);
             ctx.lineTo(startX, startY);
             ctx.closePath();
-            ctx.fillStyle = '#f8fafc';
+            ctx.fillStyle = '#1e293b'; // Slate-800
             ctx.fill();
-            ctx.strokeStyle = '#1e293b';
+            ctx.strokeStyle = '#3b82f6'; // Blue-500
             ctx.lineWidth = 3;
             ctx.stroke();
 
@@ -222,16 +225,16 @@
             
             ctx.fillStyle = '#3b82f6';
             ctx.fillRect(0, -blockSize, blockSize, blockSize);
-            ctx.strokeStyle = '#1d4ed8';
+            ctx.strokeStyle = '#f8fafc';
             ctx.lineWidth = 2;
             ctx.strokeRect(0, -blockSize, blockSize, blockSize);
 
             const vScale = 6;
             ctx.rotate(-angle); 
-            drawVector(ctx, blockSize/2, -blockSize/2, 0, mass * g * (vScale/mass*5), '#ef4444', 'نیروی وزن (W)');
+            drawVector(ctx, blockSize/2, -blockSize/2, 0, mass * g * (vScale/mass*5), '#f87171', 'W');
             ctx.rotate(angle);
-            drawVector(ctx, blockSize/2, -blockSize/2, 0, -mass * g * Math.cos(angle) * (vScale/mass*5), '#10b981', 'نیروی عمودی (FN)');
-            if (mu > 0) drawVector(ctx, 0, -blockSize/2, -mu * mass * g * Math.cos(angle) * (vScale/mass*5), 0, '#f59e0b', 'اصطکاک (f)');
+            drawVector(ctx, blockSize/2, -blockSize/2, 0, -mass * g * Math.cos(angle) * (vScale/mass*5), '#34d399', 'FN');
+            if (mu > 0) drawVector(ctx, 0, -blockSize/2, -mu * mass * g * Math.cos(angle) * (vScale/mass*5), 0, '#fbbf24', 'f');
             
             ctx.restore();
             drawGraphs();
@@ -275,7 +278,7 @@
             
             const maxPos = (slopeLength * Math.max(Math.sin(angle), Math.cos(angle))) / 50;
             render(xCtx, 'x', '#3b82f6', maxPos);
-            render(yCtx, 'y', '#8b5cf6', maxPos);
+            render(yCtx, 'y', '#a855f7', maxPos);
             render(vCtx, 'v', '#10b981', 12);
         }
 
