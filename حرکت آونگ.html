@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شبیه‌ساز فیزیکی آونگ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @font-face {
+            font-family: 'Vazir';
+            src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css');
+        }
+        body {
+            font-family: 'Tahoma', 'Arial', sans-serif;
+            background-color: #0f172a;
+            color: #f1f5f9;
+            overflow-x: hidden;
+        }
+        canvas {
+            touch-action: none;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+        .control-panel {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+        }
+        input[type="range"] {
+            accent-color: #3b82f6;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-6xl mx-auto">
+        <header class="mb-8 text-center">
+            <h1 class="text-3xl md:text-4xl font-bold text-blue-400 mb-2">شبیه‌ساز فیزیکی حرکت آونگ</h1>
+            <p class="text-slate-400">ابزاری برای تحلیل دینامیک، انرژی و دوره تناوب آونگ ساده</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- ستون کنترل‌ها -->
+            <div class="control-panel p-6 rounded-2xl shadow-xl space-y-6">
+                <h2 class="text-xl font-semibold border-b border-slate-700 pb-2 text-blue-300">تنظیمات فیزیکی</h2>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="flex justify-between text-sm mb-2">
+                            <span>طول آونگ (L):</span>
+                            <span id="val-length" class="text-blue-400">200 پیکسل</span>
+                        </label>
+                        <input type="range" id="input-length" min="50" max="400" value="250" class="w-full">
+                    </div>
+
+                    <div>
+                        <label class="flex justify-between text-sm mb-2">
+                            <span>شتاب گرانش (g):</span>
+                            <span id="val-gravity" class="text-blue-400">9.8 m/s²</span>
+                        </label>
+                        <input type="range" id="input-gravity" min="0" max="25" step="0.1" value="9.8" class="w-full">
+                    </div>
+
+                    <div>
+                        <label class="flex justify-between text-sm mb-2">
+                            <span>جرم وزنه (m):</span>
+                            <span id="val-mass" class="text-blue-400">20 kg</span>
+                        </label>
+                        <input type="range" id="input-mass" min="5" max="50" value="20" class="w-full">
+                    </div>
+
+                    <div>
+                        <label class="flex justify-between text-sm mb-2">
+                            <span>ضریب اصطکاک (Damping):</span>
+                            <span id="val-damping" class="text-blue-400">0.00</span>
+                        </label>
+                        <input type="range" id="input-damping" min="0" max="0.1" step="0.001" value="0.00" class="w-full">
+                    </div>
+                </div>
+
+                <div class="pt-4 flex flex-wrap gap-2">
+                    <button id="btn-play" class="flex-1 bg-blue-600 hover:bg-blue-500 py-2 px-4 rounded-lg transition font-bold">توقف / اجرا</button>
+                    <button id="btn-reset" class="flex-1 bg-slate-700 hover:bg-slate-600 py-2 px-4 rounded-lg transition font-bold">بازنشانی</button>
+                </div>
+
+                <div class="bg-slate-900/50 p-4 rounded-xl space-y-2 text-sm border border-slate-700">
+                    <p class="text-slate-300">نکته: وزنه را با ماوس بکشید تا رها شود.</p>
+                </div>
+            </div>
+
+            <!-- ستون نمایش شبیه‌سازی -->
+            <div class="lg:col-span-2 space-y-6">
+                <div class="relative bg-slate-800 rounded-2xl overflow-hidden aspect-video lg:aspect-auto lg:h-[500px]">
+                    <canvas id="pendulumCanvas"></canvas>
+                    
+                    <!-- همپوشانی داده‌های زنده -->
+                    <div class="absolute top-4 left-4 text-left font-mono text-xs bg-black/40 p-3 rounded-lg backdrop-blur-sm pointer-events-none">
+                        <div class="text-green-400">زاویه: <span id="stat-angle">0</span>°</div>
+                        <div class="text-yellow-400">سرعت زاویه‌ای: <span id="stat-velocity">0</span> rad/s</div>
+                        <div class="text-blue-400">دوره تناوب (T): <span id="stat-period">0</span> s</div>
+                    </div>
+                </div>
+
+                <!-- بخش نمودار انرژی -->
+                <div class="control-panel p-6 rounded-2xl shadow-xl">
+                    <h2 class="text-lg font-semibold mb-4 text-blue-300">آنالیز انرژی</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 h-24">
+                        <div class="flex flex-col">
+                            <span class="text-xs mb-1 text-red-400">انرژی جنبشی (K)</span>
+                            <div class="flex-1 bg-slate-900 rounded-lg overflow-hidden relative">
+                                <div id="bar-kinetic" class="h-full bg-red-500 transition-all duration-75" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-xs mb-1 text-blue-400">انرژی پتانسیل (U)</span>
+                            <div class="flex-1 bg-slate-900 rounded-lg overflow-hidden relative">
+                                <div id="bar-potential" class="h-full bg-blue-500 transition-all duration-75" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-xs mb-1 text-purple-400">انرژی کل (E)</span>
+                            <div class="flex-1 bg-slate-900 rounded-lg overflow-hidden relative">
+                                <div id="bar-total" class="h-full bg-purple-500 transition-all duration-75" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('pendulumCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // متغیرهای فیزیکی
+        let angle = Math.PI / 4; // زاویه شروع (45 درجه)
+        let angleVel = 0.0;
+        let angleAcc = 0.0;
+        
+        // پارامترهای قابل تغییر
+        let length = 250;
+        let gravity = 0.5; // مقیاس شده برای شبیه‌سازی
+        let mass = 20;
+        let damping = 0.0;
+        let isRunning = true;
+        let isDragging = false;
+
+        // مختصات مرکز (نقطه آویز)
+        let origin = { x: 0, y: 50 };
+
+        // تنظیم اندازه بوم
+        function resize() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+            origin.x = canvas.width / 2;
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        // کنترل‌ها
+        const inputLen = document.getElementById('input-length');
+        const inputGrav = document.getElementById('input-gravity');
+        const inputMass = document.getElementById('input-mass');
+        const inputDamp = document.getElementById('input-damping');
+
+        const displayLen = document.getElementById('val-length');
+        const displayGrav = document.getElementById('val-gravity');
+        const displayMass = document.getElementById('val-mass');
+        const displayDamp = document.getElementById('val-damping');
+
+        const btnPlay = document.getElementById('btn-play');
+        const btnReset = document.getElementById('btn-reset');
+
+        // به روزرسانی مقادیر ورودی
+        function updateParams() {
+            length = parseInt(inputLen.value);
+            displayLen.innerText = length + " px";
+            
+            // تبدیل شتاب واقعی به مقیاس شبیه‌سازی
+            gravity = parseFloat(inputGrav.value) * 0.05;
+            displayGrav.innerText = inputGrav.value + " m/s²";
+            
+            mass = parseInt(inputMass.value);
+            displayMass.innerText = mass + " kg";
+            
+            damping = parseFloat(inputDamp.value);
+            displayDamp.innerText = damping.toFixed(3);
+        }
+
+        [inputLen, inputGrav, inputMass, inputDamp].forEach(input => {
+            input.addEventListener('input', updateParams);
+        });
+
+        btnPlay.addEventListener('click', () => isRunning = !isRunning);
+        btnReset.addEventListener('click', () => {
+            angle = Math.PI / 4;
+            angleVel = 0;
+            angleAcc = 0;
+        });
+
+        // تعامل با ماوس
+        canvas.addEventListener('mousedown', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            
+            const bobX = origin.x + length * Math.sin(angle);
+            const bobY = origin.y + length * Math.cos(angle);
+            
+            const dist = Math.sqrt((mouseX - bobX)**2 + (mouseY - bobY)**2);
+            if (dist < 30) {
+                isDragging = true;
+                isRunning = false;
+            }
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+                
+                angle = Math.atan2(mouseX - origin.x, mouseY - origin.y);
+                angleVel = 0;
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                isRunning = true;
+            }
+        });
+
+        // ردیابی مسیر
+        let trace = [];
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // محاسبه فیزیک
+            if (isRunning && !isDragging) {
+                // فرمول آونگ ساده: α = -(g/L) * sin(θ)
+                angleAcc = (-1 * gravity / length) * Math.sin(angle);
+                angleVel += angleAcc;
+                angleVel *= (1 - damping); // اعمال میرایی (اصطکاک)
+                angle += angleVel;
+            }
+
+            // محاسبه مختصات وزنه
+            let x = origin.x + length * Math.sin(angle);
+            let y = origin.y + length * Math.cos(angle);
+
+            // رسم ردیابی مسیر
+            if (isRunning) {
+                trace.push({x, y});
+                if (trace.length > 50) trace.shift();
+            }
+            
+            ctx.beginPath();
+            ctx.strokeStyle = 'rgba(59, 130, 246, 0.2)';
+            ctx.lineWidth = 2;
+            for(let i=0; i<trace.length; i++) {
+                ctx.lineTo(trace[i].x, trace[i].y);
+            }
+            ctx.stroke();
+
+            // رسم پایه بالایی
+            ctx.fillStyle = '#94a3b8';
+            ctx.fillRect(origin.x - 40, origin.y - 10, 80, 10);
+
+            // رسم نخ آونگ
+            ctx.beginPath();
+            ctx.moveTo(origin.x, origin.y);
+            ctx.lineTo(x, y);
+            ctx.strokeStyle = '#f1f5f9';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // رسم وزنه (Bob)
+            ctx.beginPath();
+            ctx.arc(x, y, mass/2 + 10, 0, Math.PI * 2);
+            const gradient = ctx.createRadialGradient(x-5, y-5, 2, x, y, mass/2+10);
+            gradient.addColorStop(0, '#60a5fa');
+            gradient.addColorStop(1, '#1e40af');
+            ctx.fillStyle = gradient;
+            ctx.fill();
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // به روزرسانی آمار و نمودارها
+            updateStats(angle, angleVel, length, gravity, mass);
+
+            requestAnimationFrame(draw);
+        }
+
+        function updateStats(a, v, l, g, m) {
+            // آمار متنی
+            document.getElementById('stat-angle').innerText = (a * 180 / Math.PI).toFixed(1);
+            document.getElementById('stat-velocity').innerText = v.toFixed(3);
+            
+            // پریود نظری: T = 2π * √(L/g)
+            // در شبیه‌سازی g مقیاس شده است، پس برای نمایش واقعی از مقدار ورودی استفاده می‌کنیم
+            const realG = parseFloat(inputGrav.value);
+            const period = 2 * Math.PI * Math.sqrt((l/100) / realG); 
+            document.getElementById('stat-period').innerText = period.toFixed(2);
+
+            // محاسبات انرژی
+            // مبدا پتانسیل را پایین‌ترین نقطه در نظر می‌گیریم: h = L * (1 - cosθ)
+            const h = l * (1 - Math.cos(a));
+            const PE = m * g * h;
+            const KE = 0.5 * m * (l * v)**2;
+            const totalE = PE + KE;
+
+            // مقیاس‌بندی برای نمودار (بیشینه انرژی احتمالی)
+            const maxE = m * g * (l * 1.5); 
+            
+            document.getElementById('bar-kinetic').style.width = Math.min(100, (KE / maxE) * 100) + "%";
+            document.getElementById('bar-potential').style.width = Math.min(100, (PE / maxE) * 100) + "%";
+            document.getElementById('bar-total').style.width = Math.min(100, (totalE / maxE) * 100) + "%";
+        }
+
+        // شروع اولیه
+        updateParams();
+        draw();
+    </script>
+</body>
+</html>
