@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>آزمایشگاه مجازی فیزیک</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap');
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background-color: #0f172a;
+        }
+        .sidebar-item {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .sidebar-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            padding-right: 1.5rem;
+        }
+        .active-tab {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0) 100%);
+            border-right: 4px solid #3b82f6;
+            color: #3b82f6;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 1rem;
+        }
+    </style>
+</head>
+<body class="h-screen flex overflow-hidden">
+
+    <aside class="w-72 bg-slate-900 border-l border-slate-800 flex flex-col z-20 shadow-2xl">
+        <div class="p-6">
+            <h1 class="text-xl font-bold text-white flex items-center gap-2">
+                <span class="p-2 bg-blue-600 rounded-lg">⚛️</span>
+                آزمایشگاه فیزیک
+            </h1>
+            <p class="text-slate-500 text-xs mt-2 text-justify leading-5">مجموعه شبیه‌سازهای تعاملی برای درک بهتر مفاهیم مکانیک کلاسیک</p>
+        </div>
+
+        <nav class="flex-1 px-4 space-y-2 mt-4">
+            <button onclick="loadSim('home', this)" class="sidebar-item active-tab w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:text-white group">
+                <span class="text-lg">🏠</span>
+                <span class="font-medium">پیشخوان اصلی</span>
+            </button>
+
+            <div class="pt-4 pb-2 px-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">شبیه‌سازها</div>
+
+            <button onclick="loadSim('projectile', this)" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white group">
+                <span class="group-hover:scale-110 transition-transform">🚀</span>
+                <span>حرکت پرتابی</span>
+            </button>
+
+            <button onclick="loadSim('inclined', this)" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white group">
+                <span class="group-hover:scale-110 transition-transform">📐</span>
+                <span>سطح شیب‌دار</span>
+            </button>
+
+            <button onclick="loadSim('circular', this)" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white group">
+                <span class="group-hover:scale-110 transition-transform">🔄</span>
+                <span>حرکت دایره‌ای</span>
+            </button>
+        </nav>
+
+        <div class="p-4 mt-auto border-t border-slate-800">
+            <div class="bg-slate-800/50 rounded-xl p-3">
+                <p class="text-[10px] text-slate-500 text-center uppercase">توسعه یافته با Gemini</p>
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col relative bg-slate-950 p-4 md:p-6">
+        
+        <div id="welcome-screen" class="absolute inset-0 flex flex-col items-center justify-center text-center p-8 z-10 bg-slate-950">
+            <div class="max-w-2xl">
+                <div class="w-24 h-24 bg-blue-600/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <span class="text-5xl animate-pulse">🔭</span>
+                </div>
+                <h2 class="text-3xl font-bold text-white mb-4">به شبیه‌ساز مجازی خوش آمدید</h2>
+                <p class="text-slate-400 mb-8 leading-relaxed">
+                    یکی از آزمایش‌های موجود در منوی سمت راست را انتخاب کنید تا محیط شبیه‌سازی برای شما بارگذاری شود. در هر محیط می‌توانید پارامترهای فیزیکی را تغییر داده و نتایج را به صورت آنی مشاهده کنید.
+                </p>
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+                        <div class="text-blue-400 font-bold text-lg">دقت بالا</div>
+                        <div class="text-slate-500 text-[10px]">محاسبات لحظه‌ای</div>
+                    </div>
+                    <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+                        <div class="text-purple-400 font-bold text-lg">بصری‌سازی</div>
+                        <div class="text-slate-500 text-[10px]">نمودار و بردار</div>
+                    </div>
+                    <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+                        <div class="text-green-400 font-bold text-lg">تعاملی</div>
+                        <div class="text-slate-500 text-[10px]">کنترل پارامترها</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="sim-container" class="hidden w-full h-full relative z-20">
+            <iframe id="sim-frame" src=""></iframe>
+        </div>
+    </main>
+
+    <script>
+        function loadSim(type, btn) {
+            const frame = document.getElementById('sim-frame');
+            const container = document.getElementById('sim-container');
+            const welcome = document.getElementById('welcome-screen');
+            
+            // مدیریت استایل دکمه‌ها
+            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active-tab', 'text-white'));
+            btn.classList.add('active-tab', 'text-white');
+
+            if (type === 'home') {
+                container.classList.add('hidden');
+                welcome.classList.remove('hidden');
+                return;
+            }
+
+            welcome.classList.add('hidden');
+            container.classList.remove('hidden');
+
+            // بارگذاری فایل‌ها بر اساس نام دقیق
+            let fileName = '';
+            switch(type) {
+                case 'projectile': fileName = 'حرکت پرتابی.html'; break;
+                case 'inclined': fileName = 'حرکت بر سطح شیبدار.html'; break;
+                case 'circular': fileName = 'حرکت دایره ای.html'; break;
+            }
+            
+            frame.src = fileName;
+        }
+    </script>
+</body>
+</html>
