@@ -64,6 +64,11 @@
                 <span class="group-hover:scale-110 transition-transform">🔄</span>
                 <span>حرکت دایره‌ای</span>
             </button>
+
+            <button onclick="loadSim('pendulum', this)" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white group">
+                <span class="group-hover:scale-110 transition-transform">⏳</span>
+                <span>حرکت آونگ</span>
+            </button>
         </nav>
 
         <div class="p-4 mt-auto border-t border-slate-800">
@@ -77,10 +82,9 @@
         
         <div id="welcome-screen" class="absolute inset-0 flex flex-col items-center justify-center text-center p-8 z-10 bg-slate-950">
             <div class="max-w-2xl">
-                <!-- نمایش نام استاد با متن بزرگتر و بدون انیمیشن -->
                 <div class="mb-6 inline-block px-6 py-2 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-300 text-lg font-bold shadow-xl shadow-blue-500/5">
                     <span class="ml-2 opacity-90">🎓</span>
-                    نام استاد : جناب دکتر فرهاد بختیاری
+                    نام استاد : جناب دکتر فرهاد بختاری
                 </div>
 
                 <div class="w-24 h-24 bg-blue-600/20 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -118,7 +122,6 @@
             const container = document.getElementById('sim-container');
             const welcome = document.getElementById('welcome-screen');
             
-            // مدیریت استایل دکمه‌ها
             document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active-tab', 'text-white'));
             btn.classList.add('active-tab', 'text-white');
 
@@ -131,12 +134,12 @@
             welcome.classList.add('hidden');
             container.classList.remove('hidden');
 
-            // بارگذاری فایل‌ها بر اساس نام دقیق
             let fileName = '';
             switch(type) {
                 case 'projectile': fileName = 'حرکت پرتابی.html'; break;
                 case 'inclined': fileName = 'حرکت بر سطح شیبدار.html'; break;
                 case 'circular': fileName = 'حرکت دایره ای.html'; break;
+                case 'pendulum': fileName = 'حرکت آونگ.html'; break; // اضافه شدن فایل جدید
             }
             
             frame.src = fileName;
@@ -144,4 +147,3 @@
     </script>
 </body>
 </html>
-
